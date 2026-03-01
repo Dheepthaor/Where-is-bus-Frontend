@@ -21,16 +21,50 @@ const Login = () => {
   const [remember, setRemember] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    // Simulate login for now
+const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  // Clear previous errors
+  setEmailError("");
+  setPasswordError("");
+  
+
+  let isValid = true;
+
+  if (!email.trim()) {
+    setEmailError("Email / College ID is required");
+    isValid = false;
+  }
+
+  if (!password.trim()) {
+    setPasswordError("Password is required");
+    isValid = false;
+  }
+
+  if (!isValid) return;
+
+  setLoading(true);
+
+  try {
+    // Simulated login (replace with Supabase later)
     setTimeout(() => {
       setLoading(false);
+
+
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          email,
+          role,
+        })
+      );
+
       navigate("/dashboard");
     }, 800);
-  };
-
+  } catch (error) {
+    setLoading(false);
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden px-4">
       {/* Background effects */}
@@ -84,6 +118,9 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 className="h-12 bg-muted/50 border-border/50 focus:border-primary/50 text-foreground placeholder:text-muted-foreground/50"
               />
+              {emailError && (
+  <p className="text-red-500 text-sm mt-1">{emailError}</p>
+)}
             </div>
 
             <div className="space-y-2">
@@ -99,6 +136,8 @@ const Login = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   className="h-12 bg-muted/50 border-border/50 focus:border-primary/50 text-foreground placeholder:text-muted-foreground/50 pr-12"
                 />
+                {passwordError && (
+  <p className="text-red-500 text-sm mt-1">{passwordError}</p>
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
